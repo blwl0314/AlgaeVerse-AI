@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AlgaeVerse AI Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+      :root {
+        --primary: #805ad5;
+        --secondary: #6b46c1;
+        --accent: #9f7aea;
+        --dark: #1a202c;
+        --darker: #0f141e;
+        --light: #e9d8fd;
+        --danger: #e53e3e;
+        --warning: #d69e2e;
+        --info: #3182ce;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, var(--darker), var(--dark));
+        color: var(--light);
+        min-height: 100vh;
+      }
+      /* Navigation */
+      nav {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(128, 0, 255, 0.3);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      nav ul {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        flex-wrap: wrap;
+      }
+
+      nav ul li {
+        margin: 0 1rem;
+      }
+
+      nav ul li a {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      nav ul li a:hover {
+        background: rgba(128, 0, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {  
+        background: linear-gradient(135deg, var(--secondary), var(--primary));
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo h1 {
+        font-size: 28px;
+        font-weight: 700;
+      }
+
+      .logo img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .status-bar {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .status-item {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        background: linear-gradient(
+          135deg,
+          rgba(26, 32, 44, 0.8),
+          rgba(26, 32, 44, 0.6)
+        );
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        border: 1px solid rgba(128, 90, 213, 0.2);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(159, 122, 234, 0.3);
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--light);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .main-card {
+        grid-column: span 2;
+      }
+
+      .data-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .data-item {
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        background: rgba(26, 32, 44, 0.5);
+        border-radius: 8px;
+        border: 1px solid rgba(128, 90, 213, 0.2);
+      }
+
+      .data-label {
+        font-size: 14px;
+        color: var(--accent);
+        margin-bottom: 5px;
+      }
+
+      .data-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--light);
+      }
+
+      .data-unit {
+        font-size: 14px;
+        color: var(--accent);
+        margin-left: 4px;
+        font-weight: normal;
+      }
+
+      .gauge {
+        width: 100%;
+        height: 120px;
+        position: relative;
+        margin: 20px 0;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 250px;
+        width: 100%;
+      }
+
+      .alert {
+        padding: 12px;
+        border-radius: 8px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .alert-warning {
+        background: rgba(214, 158, 46, 0.2);
+        color: var(--warning);
+        border: 1px solid rgba(214, 158, 46, 0.3);
+      }
+
+      .alert-success {
+        background: rgba(72, 187, 120, 0.2);
+        color: #48bb78;
+        border: 1px solid rgba(72, 187, 120, 0.3);
+      }
+
+      .alert-info {
+        background: rgba(66, 153, 225, 0.2);
+        color: var(--info);
+        border: 1px solid rgba(66, 153, 225, 0.3);
+      }
+
+      .progress-bar {
+        height: 8px;
+        background: rgba(26, 32, 44, 0.5);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        border-radius: 4px;
+      }
+
+      .btn {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+        font-size: 14px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, var(--accent), var(--primary));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(128, 90, 213, 0.4);
+      }
+
+      .btn-secondary {
+        background: rgba(26, 32, 44, 0.5);
+        color: var(--light);
+        border: 1px solid rgba(128, 90, 213, 0.3);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(26, 32, 44, 0.7);
+        border-color: var(--primary);
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .system-list {
+        list-style: none;
+      }
+
+      .system-list li {
+        padding: 12px;
+        border-bottom: 1px solid rgba(159, 122, 234, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .system-list li:last-child {
+        border-bottom: none;
+      }
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+      }
+
+      .status-online {
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent);
+      }
+
+      .status-offline {
+        background: #718096;
+      }
+
+      .status-warning {
+        background: var(--warning);
+        box-shadow: 0 0 8px var(--warning);
+      }
+
+      .map-container {
+        position: relative;
+        height: 300px;
+        border-radius: 8px;
+        margin: 15px 0;
+        overflow: hidden;
+      }
+
+      #sunway-map {
+        height: 100%;
+        width: 100%;
+        z-index: 1;
+        border-radius: 8px;
+      }
+
+      .map-controls {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        z-index: 1000;
+        background: rgba(26, 32, 44, 0.8);
+        padding: 8px;
+        border-radius: 6px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        display: flex;
+        gap: 8px;
+        backdrop-filter: blur(5px);
+      }
+
+      .map-legend {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        background: rgba(26, 32, 44, 0.8);
+        padding: 8px;
+        border-radius: 6px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        font-size: 12px;
+        max-width: 150px;
+        backdrop-filter: blur(5px);
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 4px 0;
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+
+      /* Optical Density specific styles */
+      .od-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .od-status-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: rgba(26, 32, 44, 0.5);
+        border-radius: 8px;
+        border: 1px solid rgba(128, 90, 213, 0.2);
+      }
+
+      .od-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--light);
+      }
+
+      .od-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .status-low {
+        background: rgba(49, 130, 206, 0.3);
+        color: var(--info);
+      }
+
+      .status-optimal {
+        background: rgba(72, 187, 120, 0.3);
+        color: #48bb78;
+      }
+
+      .status-high {
+        background: rgba(214, 158, 46, 0.3);
+        color: var(--warning);
+      }
+
+      .status-critical {
+        background: rgba(229, 62, 62, 0.3);
+        color: var(--danger);
+      }
+
+      @media (max-width: 1024px) {
+        .dashboard {
+          grid-template-columns: 1fr 1fr;
+        }
+        .main-card {
+          grid-column: span 2;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+        .main-card {
+          grid-column: span 1;
+        }
+        .data-grid {
+          grid-template-columns: 1fr;
+        }
+        .status-bar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        .map-controls {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+      <!-- Navigation -->
+    <nav>
+      <ul>
+        <li>
+          <a href="index.html" onclick="showPage('home')"
+            ><i class="fas fa-home"></i> Home</a
+          >
+        </li>
+    </nav>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <i class="fas fa-leaf fa-2x"></i>
+          <h1>AlgaeVerse AI Dashboard</h1>
+        </div>
+        <div class="status-bar">
+          <div class="status-item">
+            <i class="fas fa-cloud-sun"></i>
+            <span>Last updated: <span id="update-time">Just now</span></span>
+          </div>
+          <div class="status-item">
+            <i class="fas fa-network-wired"></i>
+            <span>Systems online: <span id="online-count">5/5</span></span>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard">
+        <div class="card main-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-chart-line"></i>
+              Environmental Overview
+            </h2>
+            <div class="card-actions">
+              <select
+                id="location-select"
+                style="
+                  background: rgba(26, 32, 44, 0.8);
+                  color: white;
+                  border: 1px solid rgba(128, 90, 213, 0.3);
+                  padding: 5px;
+                  border-radius: 4px;
+                "
+              >
+                <option value="main-building">Main Building</option>
+                <option value="canopy-walk">Canopy Walk</option>
+                <option value="west-wing">West Wing</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="environment-chart"></canvas>
+          </div>
+
+          <div class="data-grid">
+            <div class="data-item">
+              <span class="data-label">Temperature</span>
+              <span class="data-value"
+                >28.7<span class="data-unit">°C</span></span
+              >
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 65%"></div>
+              </div>
+              <span class="data-label">Ideal: 25-30°C</span>
+            </div>
+
+            <div class="data-item">
+              <span class="data-label">pH Level</span>
+              <span class="data-value"
+                >7.2<span class="data-unit">pH</span></span
+              >
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 72%"></div>
+              </div>
+              <span class="data-label">Ideal: 6.8-7.5</span>
+            </div>
+
+            <div class="data-item">
+              <span class="data-label">CO2 Absorption</span>
+              <span class="data-value"
+                >342<span class="data-unit">ppm</span></span
+              >
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 42%"></div>
+              </div>
+              <span class="data-label">Target: &lt;300ppm</span>
+            </div>
+
+            <div class="data-item">
+              <span class="data-label">O2 Production</span>
+              <span class="data-value"
+                >12.8<span class="data-unit">mg/L</span></span
+              >
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%"></div>
+              </div>
+              <span class="data-label">Target: &gt;10mg/L</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-robot"></i>
+              AI Status
+            </h2>
+          </div>
+
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>All systems operating normally</span>
+          </div>
+
+          <div class="gauge">
+            <canvas id="harvest-gauge"></canvas>
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Algae harvest predicted in 3 days</span>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn btn-primary">
+              <i class="fas fa-sliders-h"></i>
+              Adjust Parameters
+            </button>
+            <button class="btn btn-primary">
+              <i class="fas fa-redo"></i>
+              Refresh Data
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-bolt"></i>
+              Energy Production
+            </h2>
+          </div>
+
+          <div class="data-item">
+            <span class="data-label">Solar Generation</span>
+            <span class="data-value"
+              >1.24<span class="data-unit">kWh</span></span
+            >
+          </div>
+
+          <div class="data-item">
+            <span class="data-label">System Consumption</span>
+            <span class="data-value"
+              >0.38<span class="data-unit">kWh</span></span
+            >
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 75%"></div>
+          </div>
+
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>Net positive energy: 0.86kWh</span>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="energy-chart"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-map-marked-alt"></i>
+              Sunway City System Map
+            </h2>
+          </div>
+
+          <div class="map-container">
+            <div id="sunway-map">
+              <!-- Map will be rendered here -->
+            </div>
+
+            <div class="map-controls">
+              <button class="btn btn-primary" id="btn-optimize">
+                <i class="fas fa-brain"></i> Optimize Routes
+              </button>
+              <button class="btn btn-secondary" id="btn-center">
+                <i class="fas fa-crosshairs"></i> Center Map
+              </button>
+            </div>
+
+            <div class="map-legend">
+              <h4>Map Legend</h4>
+              <div class="legend-item">
+                <div
+                  class="legend-color"
+                  style="background-color: #805ad5"
+                ></div>
+                <span>Algae Panels</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color"
+                  style="background-color: #3182ce"
+                ></div>
+                <span>Control Center</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color"
+                  style="background-color: #e53e3e"
+                ></div>
+                <span>Robots</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color"
+                  style="background-color: #d69e2e"
+                ></div>
+                <span>Optimal Routes</span>
+              </div>
+            </div>
+          </div>
+
+          <ul class="system-list">
+            <li>
+              <span
+                ><span class="status-indicator status-online"></span>Sunway
+                University Panels</span
+              >
+              <span>98% efficiency</span>
+            </li>
+            <li>
+              <span
+                ><span class="status-indicator status-online"></span>Sunway
+                Pyramid Panels</span
+              >
+              <span>92% efficiency</span>
+            </li>
+            <li>
+              <span
+                ><span class="status-indicator status-warning"></span>Sunway
+                Medical Centre Panels</span
+              >
+              <span>84% efficiency</span>
+            </li>
+            <li>
+              <span
+                ><span class="status-indicator status-online"></span>Water
+                Circulation</span
+              >
+              <span>Normal</span>
+            </li>
+            <li>
+              <span
+                ><span class="status-indicator status-online"></span>Nutrient
+                Delivery</span
+              >
+              <span>Normal</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card main-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-vial"></i>
+              Optical Density Monitoring
+            </h2>
+          </div>
+
+          <div class="od-container">
+            <div class="od-status-container">
+              <div>
+                <span class="data-label">Current Optical Density (OD680)</span>
+                <div class="data-value">
+                  2.8<span class="data-unit">OD</span>
+                </div>
+              </div>
+              <div>
+                <span class="data-label">Harvest Readiness</span>
+                <div class="od-value">78%</div>
+              </div>
+              <div>
+                <span class="data-label">Status</span>
+                <div class="od-status status-high">Harvest Soon</div>
+              </div>
+              <div>
+                <span class="data-label">Predicted Harvest Date</span>
+                <div class="data-value">
+                  3<span class="data-unit">days</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <canvas id="od-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-list-alt"></i>
+              Recent Alerts
+            </h2>
+          </div>
+
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span
+              >South Panel efficiency decreased by 8% - inspection
+              recommended</span
+            >
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Nutrient levels optimal in all sectors</span>
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span
+              >Weather forecast predicts increased sunlight for next 3
+              days</span
+            >
+          </div>
+
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>All bio-reactors operating within normal parameters</span>
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Last maintenance: 4 days ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize the map centered on Sunway City
+      const map = L.map("sunway-map").setView([3.067, 101.603], 15);
+
+      // Add OpenStreetMap tiles with dark theme
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: "abcd",
+          maxZoom: 20,
+        }
+      ).addTo(map);
+
+      // Define important locations in Sunway City
+      const locations = {
+        controlCenter: { lat: 3.067, lng: 101.603, name: "Control Center" },
+        sunwayUniversity: {
+          lat: 3.0649,
+          lng: 101.6031,
+          name: "Sunway University",
+        },
+        sunwayPyramid: { lat: 3.0716, lng: 101.6076, name: "Sunway Pyramid" },
+        sunwayMedical: {
+          lat: 3.0742,
+          lng: 101.5943,
+          name: "Sunway Medical Centre",
+        },
+        sunwayLagoon: { lat: 3.0619, lng: 101.5853, name: "Sunway Lagoon" },
+      };
+
+      // Add markers for each location
+      Object.values(locations).forEach((loc) => {
+        L.marker([loc.lat, loc.lng])
+          .addTo(map)
+          .bindPopup(`<b>${loc.name}</b><br>Algae installation site`);
+      });
+
+      // Add algae panel areas
+      const algaePanels = [
+        {
+          lat: 3.0655,
+          lng: 101.602,
+          radius: 80,
+          name: "Sunway University Panels",
+        },
+        {
+          lat: 3.071,
+          lng: 101.6065,
+          radius: 60,
+          name: "Sunway Pyramid Panels",
+        },
+        {
+          lat: 3.0735,
+          lng: 101.594,
+          radius: 70,
+          name: "Medical Centre Panels",
+        },
+        { lat: 3.062, lng: 101.586, radius: 90, name: "Sunway Lagoon Panels" },
+      ];
+
+      algaePanels.forEach((panel) => {
+        L.circle([panel.lat, panel.lng], {
+          color: "#805ad5",
+          fillColor: "#805ad5",
+          fillOpacity: 0.3,
+          radius: panel.radius,
+        })
+          .addTo(map)
+          .bindPopup(`<b>${panel.name}</b><br>Active algae panels`);
+      });
+
+      // Add robot markers
+      const robotMarkers = {
+        r1: L.marker([3.065, 101.6015], {
+          icon: L.divIcon({
+            className: "robot-marker",
+            html: '<div style="background-color:#e53e3e; width:20px; height:20px; border-radius:50%;"></div>',
+            iconSize: [20, 20],
+          }),
+        })
+          .addTo(map)
+          .bindPopup("<b>Harvester R1</b><br>Status: Harvesting"),
+
+        r2: L.marker([3.07, 101.605], {
+          icon: L.divIcon({
+            className: "robot-marker",
+            html: '<div style="background-color:#e53e3e; width:20px; height:20px; border-radius:50%;"></div>',
+            iconSize: [20, 20],
+          }),
+        })
+          .addTo(map)
+          .bindPopup("<b>Nutrient R2</b><br>Status: Delivering nutrients"),
+
+        r3: L.marker([3.067, 101.6], {
+          icon: L.divIcon({
+            className: "robot-marker",
+            html: '<div style="background-color:#e53e3e; width:20px; height:20px; border-radius:50%;"></div>',
+            iconSize: [20, 20],
+          }),
+        })
+          .addTo(map)
+          .bindPopup("<b>Harvester R3</b><br>Status: Idle"),
+      };
+
+      // Add optimal routes
+      const routePoints = [
+        [3.067, 101.603], // Control center
+        [3.065, 101.6015], // R1 position
+        [3.0655, 101.602], // University panels
+        [3.071, 101.6065], // Pyramid panels
+        [3.0735, 101.594], // Medical center panels
+        [3.062, 101.586], // Lagoon panels
+      ];
+
+      const optimalRoute = L.polyline(routePoints, {
+        color: "#dd6b20",
+        weight: 4,
+        opacity: 0.7,
+        dashArray: "10, 10",
+      }).addTo(map);
+
+      // Map control buttons
+      document
+        .getElementById("btn-center")
+        .addEventListener("click", function () {
+          map.setView([3.067, 101.603], 15);
+        });
+
+      document
+        .getElementById("btn-optimize")
+        .addEventListener("click", function () {
+          alert(
+            "AI route optimization initiated!\nCalculating most efficient paths for all robots."
+          );
+        });
+
+      // Update time
+      function updateTime() {
+        const now = new Date();
+        const options = {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+        document.getElementById("update-time").textContent =
+          now.toLocaleTimeString("en-US", options);
+      }
+
+      setInterval(updateTime, 1000);
+      updateTime();
+
+      // Environment Chart
+      const envCtx = document
+        .getElementById("environment-chart")
+        .getContext("2d");
+      const envChart = new Chart(envCtx, {
+        type: "line",
+        data: {
+          labels: ["6:00", "8:00", "10:00", "12:00", "14:00", "16:00", "18:00"],
+          datasets: [
+            {
+              label: "Temperature (°C)",
+              data: [26.2, 27.5, 28.7, 29.8, 30.2, 29.5, 28.1],
+              borderColor: "#e53e3e",
+              backgroundColor: "rgba(229, 62, 62, 0.1)",
+              tension: 0.4,
+              yAxisID: "y",
+            },
+            {
+              label: "O2 Production (mg/L)",
+              data: [8.2, 9.5, 11.2, 12.8, 13.5, 12.2, 10.5],
+              borderColor: "#805ad5",
+              backgroundColor: "rgba(128, 90, 213, 0.1)",
+              tension: 0.4,
+              yAxisID: "y1",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              type: "linear",
+              display: true,
+              position: "left",
+              title: {
+                display: true,
+                text: "Temperature (°C)",
+                color: "#e2e8f0",
+              },
+              grid: {
+                color: "rgba(255, 255, 255, 0.1)",
+              },
+              ticks: {
+                color: "#e2e8f0",
+              },
+            },
+            y1: {
+              type: "linear",
+              display: true,
+              position: "right",
+              title: {
+                display: true,
+                text: "O2 Production (mg/L)",
+                color: "#e2e8f0",
+              },
+              grid: {
+                drawOnChartArea: false,
+                color: "rgba(255, 255, 255, 0.1)",
+              },
+              ticks: {
+                color: "#e2e8f0",
+              },
+            },
+            x: {
+              grid: {
+                color: "rgba(255, 255, 255, 0.1)",
+              },
+              ticks: {
+                color: "#e2e8f0",
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: "#e2e8f0",
+              },
+            },
+          },
+        },
+      });
+
+      // Optical Density Chart
+      const odCtx = document.getElementById("od-chart").getContext("2d");
+      const odChart = new Chart(odCtx, {
+        type: "line",
+        data: {
+          labels: [
+            "Day 1",
+            "Day 2",
+            "Day 3",
+            "Day 4",
+            "Day 5",
+            "Day 6",
+            "Day 7",
+          ],
+          datasets: [
+            {
+              label: "Optical Density (OD680)",
+              data: [1.2, 1.6, 2.0, 2.3, 2.5, 2.7, 2.8],
+              borderColor: "#9f7aea",
+              backgroundColor: "rgba(159, 122, 234, 0.1)",
+              tension: 0.4,
+              fill: true,
+            },
+            {
+              label: "Harvest Threshold",
+              data: [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+              borderColor: "#38a169",
+              borderDash: [5, 5],
+              backgroundColor: "transparent",
+              tension: 0.4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Optical Density (OD680)",
+                color: "#e2e8f0",
+              },
+              grid: {
+                color: "rgba(255, 255, 255, 0.1)",
+              },
+              ticks: {
+                color: "#e2e8f0",
+              },
+            },
+            x: {
+              grid: {
+                color: "rgba(255, 255, 255, 0.1)",
+              },
+              ticks: {
+                color: "#e2e8f0",
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: "#e2e8f0",
+              },
+            },
+          },
+        },
+      });
+
+      // Harvest Gauge
+      const harvestCtx = document
+        .getElementById("harvest-gauge")
+        .getContext("2d");
+      const harvestGauge = new Chart(harvestCtx, {
+        type: "doughnut",
+        data: {
+          datasets: [
+            {
+              data: [78, 22],
+              backgroundColor: ["#805ad5", "#2d3748"],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "70%",
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+        },
+      });
+
+      // Energy Chart
+      const energyCtx = document
+        .getElementById("energy-chart")
+        .getContext("2d");
+      const energyChart = new Chart(energyCtx, {
+        type: "bar",
+        data: {
+          labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          datasets: [
+            {
+              label: "Energy Production (kWh)",
+              data: [1.15, 1.22, 1.18, 1.31, 1.24, 1.05, 0.92],
+              backgroundColor: "rgba(159, 122, 234, 0.7)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "kWh",
+                color: "#e2e8f0",
+              },
+              grid: {
+                color: "rgba(255, 255, 255, 0.1)",
+              },
+              ticks: {
+                color: "#e2e8f0",
+              },
+            },
+            x: {
+              grid: {
+                color: "rgba(255, 255, 255, 0.1)",
+              },
+              ticks: {
+                color: "#e2e8f0",
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: "#e2e8f0",
+              },
+            },
+          },
+        },
+      });
+
+      // Simulate robot movement
+      function moveRobots() {
+        // Move R1 slightly
+        const r1LatLng = robotMarkers.r1.getLatLng();
+        robotMarkers.r1.setLatLng([
+          r1LatLng.lat + (Math.random() * 0.0002 - 0.0001),
+          r1LatLng.lng + (Math.random() * 0.0002 - 0.0001),
+        ]);
+
+        // Move R2 along a path
+        const r2LatLng = robotMarkers.r2.getLatLng();
+        robotMarkers.r2.setLatLng([
+          r2LatLng.lat + 0.0001,
+          r2LatLng.lng + 0.0001,
+        ]);
+
+        // Update popup content
+        robotMarkers.r1.setPopupContent(
+          "<b>Harvester R1</b><br>Status: Harvesting<br>Updated: " +
+            new Date().toLocaleTimeString()
+        );
+        robotMarkers.r2.setPopupContent(
+          "<b>Nutrient R2</b><br>Status: Delivering nutrients<br>Updated: " +
+            new Date().toLocaleTimeString()
+        );
+      }
+
+      // Simulate live data updates
+      function updateData() {
+        // Update optical density data
+        const odData = odChart.data.datasets[0].data;
+        const lastValue = odData[odData.length - 1];
+        const newValue = Math.min(
+          3.5,
+          lastValue + (Math.random() * 0.1 - 0.02)
+        );
+        odData.push(newValue);
+        odData.shift();
+
+        // Update harvest gauge
+        const harvestProgress = Math.min(
+          100,
+          Math.round((newValue / 3.5) * 100)
+        );
+        harvestGauge.data.datasets[0].data[0] = harvestProgress;
+        harvestGauge.data.datasets[0].data[1] = 100 - harvestProgress;
+
+        // Update OD value display
+        document.querySelector(
+          '[data-label="Current Optical Density (OD680)"]'
+        ).nextElementSibling.innerHTML =
+          newValue.toFixed(1) + '<span class="data-unit">OD</span>';
+
+        // Update harvest readiness
+        document.querySelector(".od-value").textContent = `${harvestProgress}%`;
+
+        // Update status indicator
+        const statusElement = document.querySelector(".od-status");
+        if (newValue < 2.0) {
+          statusElement.className = "od-status status-low";
+          statusElement.textContent = "Growing";
+        } else if (newValue < 3.0) {
+          statusElement.className = "od-status status-optimal";
+          statusElement.textContent = "Optimal Soon";
+        } else if (newValue < 3.3) {
+          statusElement.className = "od-status status-high";
+          statusElement.textContent = "Harvest Soon";
+        } else {
+          statusElement.className = "od-status status-critical";
+          statusElement.textContent = "Harvest Now";
+        }
+
+        // Update predicted harvest date
+        const daysToHarvest = Math.max(0, Math.round((3.0 - newValue) / 0.42));
+        document.querySelector(
+          '[data-label="Predicted Harvest Date"]'
+        ).nextElementSibling.innerHTML =
+          daysToHarvest + '<span class="data-unit">days</span>';
+
+        // Randomly fluctuate temperature
+        const tempData = envChart.data.datasets[0].data;
+        for (let i = 0; i < tempData.length; i++) {
+          tempData[i] = tempData[i] + (Math.random() * 0.6 - 0.3);
+        }
+
+        // Randomly fluctuate O2 production
+        const o2Data = envChart.data.datasets[1].data;
+        for (let i = 0; i < o2Data.length; i++) {
+          o2Data[i] = o2Data[i] + (Math.random() * 0.4 - 0.2);
+        }
+
+        // Update charts
+        odChart.update();
+        envChart.update();
+        harvestGauge.update();
+
+        // Update data values with slight fluctuations
+        document.querySelector(
+          '[data-label="Temperature"]'
+        ).nextElementSibling.innerHTML =
+          (28.7 + (Math.random() * 0.6 - 0.3)).toFixed(1) +
+          '<span class="data-unit">°C</span>';
+
+        document.querySelector(
+          '[data-label="O2 Production"]'
+        ).nextElementSibling.innerHTML =
+          (12.8 + (Math.random() * 0.4 - 0.2)).toFixed(1) +
+          '<span class="data-unit">mg/L</span>';
+
+        // Move robots
+        moveRobots();
+      }
+
+      // Update data every 30 seconds
+      setInterval(updateData, 30000);
+    </script>
+  </body>
+</html>
