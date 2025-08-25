@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AlgaeVerse Control Center - Bandar Sunway</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+      :root {
+        --primary: #6b21a8;
+        --secondary: #581c87;
+        --accent: #a855f7;
+        --dark: #0f0f0f;
+        --light: #f3e8ff;
+        --danger: #e74c3c;
+        --warning: #f39c12;
+        --info: #3498db;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #000000, #1a0033, #330066);
+        color: #f5f5f5;
+        overflow-x: hidden;
+      }
+      /* Navigation */
+      nav {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(128, 0, 255, 0.3);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      nav ul {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        flex-wrap: wrap;
+      }
+
+      nav ul li {
+        margin: 0 1rem;
+      }
+
+      nav ul li a {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      nav ul li a:hover {
+        background: rgba(128, 0, 255, 0.3);
+        transform: translateY(-2px);
+      }
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo h1 {
+        font-size: 28px;
+        font-weight: 700;
+        background: linear-gradient(to right, #d8b5ff, #6e00ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .logo img {
+        width: 50px;
+        height: 50px;
+        filter: invert(1);
+      }
+
+      .status-bar {
+        display: flex;
+        gap: 15px;
+      }
+
+      .status-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 20px;
+      }
+
+      .card {
+        background: linear-gradient(145deg, #1a1a1a, #2d004d);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(107, 33, 168, 0.3);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--light);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .main-card {
+        grid-column: span 2;
+      }
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+
+      .data-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .data-item {
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        background: rgba(107, 33, 168, 0.2);
+        border-radius: 8px;
+        border: 1px solid rgba(168, 85, 247, 0.2);
+      }
+
+      .data-label {
+        font-size: 14px;
+        color: #d8b5ff;
+        margin-bottom: 5px;
+      }
+
+      .data-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .data-unit {
+        font-size: 14px;
+        color: #d8b5ff;
+        margin-left: 4px;
+      }
+
+      .gauge {
+        width: 100%;
+        height: 120px;
+        position: relative;
+        margin: 20px 0;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 250px;
+        width: 100%;
+      }
+
+      .alert {
+        padding: 12px;
+        border-radius: 8px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(0, 0, 0, 0.4);
+        border-left: 4px solid;
+      }
+
+      .alert-warning {
+        border-left-color: var(--warning);
+        color: #ffcc77;
+      }
+
+      .alert-success {
+        border-left-color: var(--accent);
+        color: #d8b5ff;
+      }
+
+      .alert-info {
+        border-left-color: var(--info);
+        color: #85c1e9;
+      }
+
+      .alert-danger {
+        border-left-color: var(--danger);
+        color: #f1948a;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        border-radius: 4px;
+      }
+
+      .btn {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(to right, var(--accent), var(--primary));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--light);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .system-list {
+        list-style: none;
+      }
+
+      .system-list li {
+        padding: 12px;
+        border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .system-list li:last-child {
+        border-bottom: none;
+      }
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+      }
+
+      .status-online {
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent);
+      }
+
+      .status-offline {
+        background: #666;
+      }
+
+      .status-warning {
+        background: var(--warning);
+        box-shadow: 0 0 8px var(--warning);
+      }
+
+      .status-danger {
+        background: var(--danger);
+        box-shadow: 0 0 8px var(--danger);
+      }
+
+      .map-container {
+        position: relative;
+        height: 400px;
+        border-radius: 8px;
+        margin: 15px 0;
+        overflow: hidden;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        background: linear-gradient(135deg, #0a0a0a, #1a0033);
+      }
+
+      .map-view {
+        height: 100%;
+        width: 100%;
+      }
+
+      .map-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: rgba(26, 0, 51, 0.8);
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        display: flex;
+        gap: 10px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+      }
+
+      .map-legend {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: rgba(26, 0, 51, 0.8);
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        font-size: 14px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 5px 0;
+      }
+
+      .legend-color {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+      }
+
+      .robot-controls {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .robot-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .robot-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: rgba(107, 33, 168, 0.2);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid rgba(168, 85, 247, 0.2);
+      }
+
+      .robot-item:hover {
+        background: rgba(107, 33, 168, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .robot-item.selected {
+        background: rgba(107, 33, 168, 0.4);
+        border: 2px solid var(--accent);
+      }
+
+      .robot-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .robot-status {
+        font-size: 14px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .robot-status.idle {
+        background: rgba(52, 152, 219, 0.2);
+        color: var(--info);
+      }
+
+      .robot-status.harvesting {
+        background: rgba(107, 33, 168, 0.3);
+        color: var(--accent);
+      }
+
+      .robot-status.moving {
+        background: rgba(243, 156, 18, 0.2);
+        color: var(--warning);
+      }
+
+      .robot-status.error {
+        background: rgba(231, 76, 60, 0.2);
+        color: var(--danger);
+      }
+
+      .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .task-item {
+        padding: 10px;
+        background: rgba(107, 33, 168, 0.2);
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(168, 85, 247, 0.2);
+      }
+
+      .task-priority {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+      }
+
+      .priority-high {
+        background: var(--danger);
+        box-shadow: 0 0 8px var(--danger);
+      }
+
+      .priority-medium {
+        background: var(--warning);
+        box-shadow: 0 0 8px var(--warning);
+      }
+
+      .priority-low {
+        background: var(--info);
+        box-shadow: 0 0 8px var(--info);
+      }
+
+      .routing-panel {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: rgba(26, 0, 51, 0.8);
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        width: 300px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+      }
+
+      .route-info {
+        margin: 10px 0;
+        padding: 10px;
+        background: rgba(107, 33, 168, 0.2);
+        border-radius: 6px;
+      }
+
+      .route-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .route-detail {
+        font-size: 14px;
+      }
+
+      @media (max-width: 1200px) {
+        .dashboard {
+          grid-template-columns: 1fr 1fr;
+        }
+        .main-card {
+          grid-column: span 2;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+        .main-card {
+          grid-column: span 1;
+        }
+        .data-grid {
+          grid-template-columns: 1fr;
+        }
+        .routing-panel {
+          width: 200px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <ul>
+        <li>
+          <a href="index.html" onclick="showPage('home')"
+            ><i class="fas fa-home"></i> Home</a
+          >
+        </li>
+    </nav>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <i class="fas fa-leaf fa-2x"></i>
+          <h1>AlgaeVerse Control Center - Bandar Sunway</h1>
+        </div>
+        <div class="status-bar">
+          <div class="status-item">
+            <i class="fas fa-cloud-sun"></i>
+            <span>Last updated: <span id="update-time">Just now</span></span>
+          </div>
+          <div class="status-item">
+            <i class="fas fa-network-wired"></i>
+            <span>Systems online: <span id="online-count">8/8</span></span>
+          </div>
+          <div class="status-item">
+            <i class="fas fa-robot"></i>
+            <span>Robots active: <span id="robot-count">3/4</span></span>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard">
+        <div class="card main-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-map-marked-alt"></i>
+              AI Routing & Navigation - Bandar Sunway
+            </h2>
+            <div class="card-actions">
+              <select id="view-select">
+                <option value="overview">Overview</option>
+                <option value="harvest">Harvest Routes</option>
+                <option value="nutrient">Nutrient Delivery</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="map-container">
+            <div class="map-view" id="map">
+              <!-- Map will be rendered here by Leaflet -->
+            </div>
+
+            <div class="routing-panel">
+              <h3><i class="fas fa-route"></i> AI Routing</h3>
+              <div class="route-info">
+                <div>Current Route: <strong>Harvesting Run #12</strong></div>
+                <div>Robot: <strong>Harvester R1</strong></div>
+                <div class="route-details">
+                  <div class="route-detail">
+                    <i class="fas fa-road"></i> Distance: 2.4km
+                  </div>
+                  <div class="route-detail">
+                    <i class="fas fa-clock"></i> ETA: 15min
+                  </div>
+                  <div class="route-detail">
+                    <i class="fas fa-bolt"></i> Energy: 78%
+                  </div>
+                  <div class="route-detail">
+                    <i class="fas fa-flask"></i> Harvest: 45L
+                  </div>
+                </div>
+              </div>
+              <div class="action-buttons">
+                <button class="btn btn-primary">
+                  <i class="fas fa-route"></i>
+                  Calculate Optimal Routes
+                </button>
+              </div>
+            </div>
+
+            <div class="map-controls">
+              <button class="btn btn-primary" id="btn-optimize">
+                <i class="fas fa-brain"></i> Optimize Routes
+              </button>
+              <button class="btn btn-secondary" id="btn-center">
+                <i class="fas fa-crosshairs"></i> Center Map
+              </button>
+            </div>
+
+            <div class="map-legend">
+              <h4>Map Legend</h4>
+              <div class="legend-item">
+                <div
+                  class="legend-color"
+                  style="background-color: #2c7a5a"
+                ></div>
+                <span>Algae Panels</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color"
+                  style="background-color: #3498db"
+                ></div>
+                <span>Control Center</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color"
+                  style="background-color: #e74c3c"
+                ></div>
+                <span>Robots</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color"
+                  style="background-color: #f39c12"
+                ></div>
+                <span>Optimal Routes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-robot"></i>
+              Robot Status
+            </h2>
+          </div>
+
+          <div class="robot-list">
+            <div class="robot-item selected" data-robot="r1">
+              <div class="robot-info">
+                <i class="fas fa-robot"></i>
+                <span>Harvester R1</span>
+              </div>
+              <div class="robot-status harvesting">Harvesting</div>
+            </div>
+
+            <div class="robot-item" data-robot="r2">
+              <div class="robot-info">
+                <i class="fas fa-robot"></i>
+                <span>Nutrient R2</span>
+              </div>
+              <div class="robot-status moving">En Route</div>
+            </div>
+
+            <div class="robot-item" data-robot="r3">
+              <div class="robot-info">
+                <i class="fas fa-robot"></i>
+                <span>Harvester R3</span>
+              </div>
+              <div class="robot-status idle">Idle</div>
+            </div>
+
+            <div class="robot-item" data-robot="r4">
+              <div class="robot-info">
+                <i class="fas fa-robot"></i>
+                <span>Harvester R4</span>
+              </div>
+              <div class="robot-status error">Maintenance</div>
+            </div>
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span>R2 delivering nutrients to Sunway University</span>
+          </div>
+
+          <div class="robot-controls">
+            <button class="btn btn-primary">
+              <i class="fas fa-play"></i>
+              Start All
+            </button>
+            <button class="btn btn-secondary">
+              <i class="fas fa-pause"></i>
+              Pause All
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-tasks"></i>
+              Task Queue
+            </h2>
+          </div>
+
+          <div class="task-list">
+            <div class="task-item">
+              <div class="task-info">
+                <div class="task-priority priority-high"></div>
+                <span>Harvest Sunway University</span>
+              </div>
+              <div class="task-time">15 min</div>
+            </div>
+
+            <div class="task-item">
+              <div class="task-info">
+                <div class="task-priority priority-medium"></div>
+                <span>Refill Nutrients Sunway Pyramid</span>
+              </div>
+              <div class="task-time">25 min</div>
+            </div>
+
+            <div class="task-item">
+              <div class="task-info">
+                <div class="task-priority priority-low"></div>
+                <span>Inspect Sunway Medical Centre</span>
+              </div>
+              <div class="task-time">45 min</div>
+            </div>
+
+            <div class="task-item">
+              <div class="task-info">
+                <div class="task-priority priority-medium"></div>
+                <span>Harvest Sunway Geo</span>
+              </div>
+              <div class="task-time">30 min</div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus"></i>
+              Add Task
+            </button>
+            <button class="btn btn-secondary">
+              <i class="fas fa-random"></i>
+              Reorder Tasks
+            </button>
+          </div>
+        </div>
+
+        <div class="card main-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-chart-line"></i>
+              Harvesting Metrics
+            </h2>
+            <div class="card-actions">
+              <select id="time-select">
+                <option value="day">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="harvest-chart"></canvas>
+          </div>
+
+          <div class="data-grid">
+            <div class="data-item">
+              <span class="data-label">Algae Harvested Today</span>
+              <span class="data-value"
+                >342<span class="data-unit">L</span></span
+              >
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 68%"></div>
+              </div>
+              <span class="data-label">Target: 500L</span>
+            </div>
+
+            <div class="data-item">
+              <span class="data-label">Nutrients Used</span>
+              <span class="data-value"
+                >28<span class="data-unit">kg</span></span
+              >
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 35%"></div>
+              </div>
+              <span class="data-label">Weekly limit: 80kg</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-flask"></i>
+              Nutrient Management
+            </h2>
+          </div>
+
+          <div class="data-item">
+            <span class="data-label">Main Tank Level</span>
+            <span class="data-value">78<span class="data-unit">%</span></span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 78%"></div>
+            </div>
+          </div>
+
+          <div class="data-item">
+            <span class="data-label">pH Balance</span>
+            <span class="data-value">7.2<span class="data-unit">pH</span></span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 72%"></div>
+            </div>
+            <span class="data-label">Ideal: 6.8-7.5</span>
+          </div>
+
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Nitrogen levels low at Sunway University</span>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn btn-primary">
+              <i class="fas fa-fill-drip"></i>
+              Schedule Refill
+            </button>
+          </div>
+        </div>
+
+        <div class="card full-width">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-list-alt"></i>
+              System Alerts & Notifications
+            </h2>
+          </div>
+
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <span
+              >Robot R4 requires maintenance - motor efficiency down 23%</span
+            >
+          </div>
+
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span
+              >Algae density high at Sunway University - ready for harvest</span
+            >
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span
+              >Weather forecast predicts increased sunlight for next 3
+              days</span
+            >
+          </div>
+
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>All bio-reactors operating within normal parameters</span>
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Last maintenance: 2 days ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize the map centered on Bandar Sunway
+      const map = L.map("map").setView([3.067, 101.6], 15);
+
+      // Add OpenStreetMap tiles
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      // Add satellite imagery layer
+      L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          attribution:
+            "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+        }
+      ).addTo(map);
+
+      // Define important locations in Bandar Sunway
+      const locations = {
+        controlCenter: { lat: 3.067, lng: 101.6, name: "Control Center" },
+        sunwayUniversity: {
+          lat: 3.0649,
+          lng: 101.6031,
+          name: "Sunway University",
+        },
+        sunwayPyramid: { lat: 3.0716, lng: 101.6076, name: "Sunway Pyramid" },
+        sunwayMedical: {
+          lat: 3.0742,
+          lng: 101.5943,
+          name: "Sunway Medical Centre",
+        },
+        sunwayGeo: { lat: 3.0586, lng: 101.5987, name: "Sunway Geo" },
+        sunwayLagoon: { lat: 3.0619, lng: 101.5853, name: "Sunway Lagoon" },
+      };
+
+      // Add markers for each location
+      Object.values(locations).forEach((loc) => {
+        L.marker([loc.lat, loc.lng])
+          .addTo(map)
+          .bindPopup(`<b>${loc.name}</b><br>Algae installation site`);
+      });
+
+      // Add algae panel areas
+      const algaePanels = [
+        {
+          lat: 3.0655,
+          lng: 101.602,
+          radius: 80,
+          name: "Sunway University Panels",
+        },
+        {
+          lat: 3.071,
+          lng: 101.6065,
+          radius: 60,
+          name: "Sunway Pyramid Panels",
+        },
+        {
+          lat: 3.0735,
+          lng: 101.594,
+          radius: 70,
+          name: "Medical Centre Panels",
+        },
+        { lat: 3.059, lng: 101.599, radius: 90, name: "Sunway Geo Panels" },
+      ];
+
+      algaePanels.forEach((panel) => {
+        L.circle([panel.lat, panel.lng], {
+          color: "#2c7a5a",
+          fillColor: "#2c7a5a",
+          fillOpacity: 0.3,
+          radius: panel.radius,
+        })
+          .addTo(map)
+          .bindPopup(`<b>${panel.name}</b><br>Active algae panels`);
+      });
+
+      // Add robot markers
+      const robotMarkers = {
+        r1: L.marker([3.065, 101.6015], {
+          icon: L.divIcon({
+            className: "robot-marker",
+            html: '<div style="background-color:#e74c3c; width:20px; height:20px; border-radius:50%;"></div>',
+            iconSize: [20, 20],
+          }),
+        })
+          .addTo(map)
+          .bindPopup("<b>Harvester R1</b><br>Status: Harvesting"),
+
+        r2: L.marker([3.07, 101.605], {
+          icon: L.divIcon({
+            className: "robot-marker",
+            html: '<div style="background-color:#e74c3c; width:20px; height:20px; border-radius:50%;"></div>',
+            iconSize: [20, 20],
+          }),
+        })
+          .addTo(map)
+          .bindPopup("<b>Nutrient R2</b><br>Status: Delivering nutrients"),
+
+        r3: L.marker([3.067, 101.6], {
+          icon: L.divIcon({
+            className: "robot-marker",
+            html: '<div style="background-color:#e74c3c; width:20px; height:20px; border-radius:50%;"></div>',
+            iconSize: [20, 20],
+          }),
+        })
+          .addTo(map)
+          .bindPopup("<b>Harvester R3</b><br>Status: Idle"),
+      };
+
+      // Add optimal routes
+      const routePoints = [
+        [3.067, 101.6], // Control center
+        [3.065, 101.6015], // R1 position
+        [3.0655, 101.602], // University panels
+        [3.071, 101.6065], // Pyramid panels
+        [3.0735, 101.594], // Medical center panels
+        [3.059, 101.599], // Geo panels
+      ];
+
+      const optimalRoute = L.polyline(routePoints, {
+        color: "#f39c12",
+        weight: 4,
+        opacity: 0.7,
+        dashArray: "10, 10",
+      }).addTo(map);
+
+      // Update time
+      function updateTime() {
+        const now = new Date();
+        const options = {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+        document.getElementById("update-time").textContent =
+          now.toLocaleTimeString("en-US", options);
+      }
+
+      setInterval(updateTime, 1000);
+      updateTime();
+
+      // Harvest Chart
+      const harvestCtx = document
+        .getElementById("harvest-chart")
+        .getContext("2d");
+      const harvestChart = new Chart(harvestCtx, {
+        type: "bar",
+        data: {
+          labels: [
+            "Sunway University",
+            "Sunway Pyramid",
+            "Medical Centre",
+            "Sunway Geo",
+            "Sunway Lagoon",
+          ],
+          datasets: [
+            {
+              label: "Algae Harvested (L)",
+              data: [120, 90, 75, 45, 12],
+              backgroundColor: "rgba(52, 165, 111, 0.7)",
+            },
+            {
+              label: "Target (L)",
+              data: [150, 150, 150, 150, 150],
+              backgroundColor: "rgba(140, 193, 82, 0.3)",
+              type: "line",
+              fill: false,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Liters",
+              },
+            },
+          },
+        },
+      });
+
+      // Robot selection
+      const robotItems = document.querySelectorAll(".robot-item");
+      robotItems.forEach((item) => {
+        item.addEventListener("click", function () {
+          robotItems.forEach((r) => r.classList.remove("selected"));
+          this.classList.add("selected");
+
+          const robotId = this.getAttribute("data-robot");
+          if (robotMarkers[robotId]) {
+            map.setView(robotMarkers[robotId].getLatLng(), 16);
+          }
+        });
+      });
+
+      // Map control buttons
+      document
+        .getElementById("btn-center")
+        .addEventListener("click", function () {
+          map.setView([3.067, 101.6], 15);
+        });
+
+      document
+        .getElementById("btn-optimize")
+        .addEventListener("click", function () {
+          alert(
+            "AI route optimization initiated!\nCalculating most efficient paths for all robots."
+          );
+        });
+
+      // Simulate robot movement
+      function moveRobots() {
+        // Move R1 slightly
+        const r1LatLng = robotMarkers.r1.getLatLng();
+        robotMarkers.r1.setLatLng([
+          r1LatLng.lat + (Math.random() * 0.0002 - 0.0001),
+          r1LatLng.lng + (Math.random() * 0.0002 - 0.0001),
+        ]);
+
+        // Move R2 along a path
+        const r2LatLng = robotMarkers.r2.getLatLng();
+        robotMarkers.r2.setLatLng([
+          r2LatLng.lat + 0.0001,
+          r2LatLng.lng + 0.0001,
+        ]);
+
+        // Update popup content
+        robotMarkers.r1.setPopupContent(
+          "<b>Harvester R1</b><br>Status: Harvesting<br>Updated: " +
+            new Date().toLocaleTimeString()
+        );
+        robotMarkers.r2.setPopupContent(
+          "<b>Nutrient R2</b><br>Status: Delivering nutrients<br>Updated: " +
+            new Date().toLocaleTimeString()
+        );
+      }
+
+      // Simulate data updates
+      function updateData() {
+        // Update harvest chart
+        const harvestData = harvestChart.data.datasets[0].data;
+        for (let i = 0; i < harvestData.length; i++) {
+          if (Math.random() > 0.5) {
+            harvestData[i] = Math.min(150, harvestData[i] + Math.random() * 10);
+          }
+        }
+        harvestChart.update();
+
+        // Update robot status
+        const statuses = ["idle", "harvesting", "moving", "error"];
+        const statusElements = document.querySelectorAll(".robot-status");
+        statusElements.forEach((el) => {
+          if (Math.random() > 0.8) {
+            const newStatus =
+              statuses[Math.floor(Math.random() * statuses.length)];
+            el.className = `robot-status ${newStatus}`;
+            el.textContent =
+              newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+          }
+        });
+
+        // Update task times
+        const taskTimes = document.querySelectorAll(".task-time");
+        taskTimes.forEach((el) => {
+          const time = parseInt(el.textContent);
+          if (time > 0 && Math.random() > 0.7) {
+            el.textContent = `${time - 1} min`;
+          }
+        });
+
+        // Move robots
+        moveRobots();
+      }
+
+      // Update data every 10 seconds
+      setInterval(updateData, 10000);
+    </script>
+  </body>
+</html>
