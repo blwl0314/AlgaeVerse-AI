@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AlgaeVerse AI - Sustainable Urban Cooling Solutions</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", "Arial", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #000000, #2d004d, #4a0080);
+        color: #ffffff;
+        line-height: 1.6;
+        min-height: 100vh;
+        background-attachment: fixed;
+      }
+
+      /* Navigation */
+      nav {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(128, 0, 255, 0.3);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      nav ul {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        flex-wrap: wrap;
+      }
+
+      nav ul li {
+        margin: 0 1rem;
+      }
+
+      nav ul li a {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      nav ul li a:hover {
+        background: rgba(128, 0, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+      }
+
+      .user-btn {
+        background: rgba(128, 0, 255, 0.3);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .user-btn:hover {
+        background: rgba(128, 0, 255, 0.5);
+        transform: translateY(-2px);
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .user-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #6a00f4, #8a2be2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+      }
+
+      /* Page container */
+      .page {
+        display: none;
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .active {
+        display: block;
+      }
+
+      /* Headings */
+      h1,
+      h2,
+      h3 {
+        margin-bottom: 1rem;
+        text-align: center;
+        color: #d8b6ff;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin: 2rem 0;
+        text-shadow: 0 0 10px rgba(128, 0, 255, 0.7);
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin-top: 2rem;
+        border-bottom: 2px solid #8a2be2;
+        padding-bottom: 0.5rem;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        color: #c77dff;
+        margin-top: 1.5rem;
+      }
+
+      /* Content sections */
+      .content-section {
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 10px;
+        padding: 2rem;
+        margin: 2rem 0;
+        box-shadow: 0 4px 15px rgba(128, 0, 255, 0.2);
+      }
+
+      /* Hero section */
+      .hero {
+        text-align: center;
+        padding: 4rem 2rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          rgba(138, 43, 226, 0.2) 0%,
+          rgba(0, 0, 0, 0) 70%
+        );
+        z-index: -1;
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, #bb86fc, #8a2be2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: none;
+      }
+
+      .hero p {
+        font-size: 1.3rem;
+        max-width: 800px;
+        margin: 0 auto 2rem;
+        color: #e0d6ff;
+      }
+
+      /* Cards */
+      .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        margin: 2rem 0;
+      }
+
+      .card {
+        background: rgba(45, 0, 77, 0.7);
+        border-radius: 10px;
+        padding: 1.5rem;
+        flex: 1 1 300px;
+        max-width: 350px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(128, 0, 255, 0.4);
+      }
+
+      .card h3 {
+        color: #e0aaff;
+        margin-top: 0;
+      }
+
+      /* Lists */
+      ul,
+      ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      li {
+        margin-bottom: 0.5rem;
+        position: relative;
+      }
+
+      li::before {
+        content: "•";
+        color: #bb86fc;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 2rem;
+        margin-top: 2rem;
+        background: rgba(0, 0, 0, 0.8);
+        border-top: 1px solid #4a0080;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-block;
+        background: linear-gradient(45deg, #6a00f4, #8a2be2);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0.5rem;
+        box-shadow: 0 4px 8px rgba(106, 0, 244, 0.3);
+      }
+
+      .btn:hover {
+        background: linear-gradient(45deg, #8a2be2, #6a00f4);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(128, 0, 255, 0.4);
+      }
+
+      /* Icons */
+      .icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #bb86fc;
+        background: rgba(187, 134, 252, 0.1);
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+
+      /* Visualizations */
+      .visualization {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: rgba(35, 0, 60, 0.5);
+        border-radius: 10px;
+        border-left: 4px solid #8a2be2;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .stat-box {
+        background: rgba(138, 43, 226, 0.2);
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .stat-box:hover {
+        transform: scale(1.03);
+        background: rgba(138, 43, 226, 0.25);
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #e0aaff;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: 1rem;
+        color: #d8b6ff;
+      }
+
+      .comparison-chart {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        height: 200px;
+        margin: 2rem 0;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+      }
+
+      .chart-bar {
+        width: 60px;
+        background: linear-gradient(to top, #6a00f4, #8a2be2);
+        border-radius: 5px 5px 0 0;
+        position: relative;
+        transition: height 0.5s ease;
+      }
+
+      .chart-bar-label {
+        position: absolute;
+        bottom: -25px;
+        width: 100%;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+
+      .process-flow {
+        display: flex;
+        justify-content: space-between;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+      }
+
+      .process-step {
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+        padding: 1.5rem;
+        position: relative;
+      }
+
+      .process-step:not(:last-child)::after {
+        content: "→";
+        position: absolute;
+        right: -10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.5rem;
+        color: #bb86fc;
+      }
+
+      .step-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #bb86fc;
+        background: rgba(187, 134, 252, 0.1);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+      }
+
+      /* Login Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        background: linear-gradient(135deg, #1a0033, #2d004d);
+        padding: 2rem;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        position: relative;
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #d8b6ff;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 5px;
+        border: 1px solid #4a0080;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #8a2be2;
+        box-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+      }
+
+      .form-footer {
+        margin-top: 1.5rem;
+        text-align: center;
+        color: #d8b6ff;
+      }
+
+      .form-footer a {
+        color: #bb86fc;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .form-footer a:hover {
+        text-decoration: underline;
+      }
+
+      .error-message {
+        color: #ff6b6b;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        display: none;
+      }
+
+      /* Dashboard elements (for logged-in users) */
+      .dashboard-section {
+        display: none;
+        background: rgba(45, 0, 77, 0.5);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid #bb86fc;
+      }
+
+      /* Dashboard specific styles */
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .dashboard-card {
+        background: rgba(45, 0, 77, 0.7);
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s ease;
+      }
+
+      .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(128, 0, 255, 0.4);
+      }
+
+      .dashboard-card h3 {
+        color: #e0aaff;
+        margin-top: 0;
+        border-bottom: 1px solid #8a2be2;
+        padding-bottom: 0.5rem;
+      }
+
+      .control-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .control-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+      }
+
+      .slider-container {
+        width: 60%;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 5px;
+        background: rgba(187, 134, 252, 0.2);
+        outline: none;
+      }
+
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #8a2be2;
+        cursor: pointer;
+      }
+
+      .slider-value {
+        min-width: 40px;
+        text-align: right;
+      }
+
+      .alert-list {
+        list-style: none;
+        margin-left: 0;
+      }
+
+      .alert-list li {
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+        border-radius: 5px;
+        background: rgba(187, 134, 252, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .alert-list li::before {
+        content: "";
+        width: 0;
+        margin: 0;
+      }
+
+      .alert-list .fa-exclamation-triangle {
+        color: #ff9800;
+      }
+
+      .alert-list .fa-check-circle {
+        color: #4caf50;
+      }
+
+      .alert-list .fa-info-circle {
+        color: #2196f3;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+
+      .data-table th,
+      .data-table td {
+        padding: 0.8rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+      }
+
+      .data-table th {
+        color: #bb86fc;
+      }
+
+      .progress-bar {
+        height: 10px;
+        background: rgba(187, 134, 252, 0.2);
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 0.5rem 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6a00f4, #8a2be2);
+        border-radius: 5px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        nav ul {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        nav ul li {
+          margin: 0.5rem 0;
+        }
+
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+
+        .process-step:not(:last-child)::after {
+          content: "";
+        }
+
+        .process-step {
+          min-width: 100%;
+          margin-bottom: 1.5rem;
+        }
+
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .slider-container {
+          width: 50%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <ul>
+        <li>
+          <a href="#" onclick="showPage('home')"
+            ><i class="fas fa-home"></i> Home</a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="showPage('problem')"
+            ><i class="fas fa-exclamation-triangle"></i> Problem</a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="showPage('solution')"
+            ><i class="fas fa-lightbulb"></i> Solution</a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="showPage('technology')"
+            ><i class="fas fa-microchip"></i> Technology</a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="showPage('impact')"
+            ><i class="fas fa-chart-line"></i> Impact</a
+          >
+        </li>
+        <!-- Dashboard links (shown only when logged in) -->
+        <li id="aiDashboardLink" style="display: none">
+          <a href="AIdashboard.hmtl" onclick="showPage('aiDashboard')"
+            ><i class="fas fa-brain"></i> AI Dashboard</a
+          >
+        </li>
+        <li id="centerDashboardLink" style="display: none">
+          <a href="Centerdashboard.html" onclick="showPage('centerDashboard')"
+            ><i class="fas fa-tachometer-alt"></i> ACC</a
+          >
+        </li>
+        <li id="ODADashboardLink" style="display: none">
+          <a href="ODA.html" onclick="showPage('ODADashboard')"
+            ><i class="fas fa-eye-dropper"></i> ODA</a
+          >
+        </li>
+      </ul>
+
+      <div class="user-actions">
+        <div id="userInfo" class="user-info" style="display: none">
+          <div class="user-avatar" id="userAvatar"></div>
+          <span id="userName"></span>
+          <button class="user-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+        <button id="loginBtn" class="user-btn" onclick="showLoginModal()">
+          <i class="fas fa-user"></i> Login
+        </button>
+      </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeLoginModal()">&times;</button>
+        <h2>Login to Your Account</h2>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              required
+              placeholder="Enter your password"
+            />
+          </div>
+          <div class="error-message" id="loginError"></div>
+          <button type="submit" class="btn" style="width: 100%">Login</button>
+        </form>
+        <div class="form-footer">
+          <p>
+            Don't have an account? <a onclick="showRegisterForm()">Register</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeRegisterModal()">
+          &times;
+        </button>
+        <h2>Create an Account</h2>
+        <form id="registerForm" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label for="regName">Full Name</label>
+            <input
+              type="text"
+              id="regName"
+              required
+              placeholder="Enter your full name"
+            />
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input
+              type="email"
+              id="regEmail"
+              required
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input
+              type="password"
+              id="regPassword"
+              required
+              placeholder="Create a password"
+            />
+          </div>
+          <div class="error-message" id="registerError"></div>
+          <button type="submit" class="btn" style="width: 100%">
+            Register
+          </button>
+        </form>
+        <div class="form-footer">
+          <p>Already have an account? <a onclick="showLoginForm()">Login</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+      <div class="hero">
+        <h1>AlgaeVerse AI</h1>
+        <p>Intelligent Algae Façade Optimization for Sustainable Cities</p>
+        <a href="#" class="btn" onclick="showPage('problem')"
+          >Explore Our Solution</a
+        >
+      </div>
+
+      <div class="content-section">
+        <h2>Transforming Urban Environments with AI-Powered Bio-Solutions</h2>
+        <p>
+          AlgaeVerse AI combines cutting-edge artificial intelligence with
+          sustainable biotechnology to create smarter, greener, and more livable
+          cities. Our intelligent algae building façades act as "living green
+          skins" that naturally cool buildings, capture CO₂, and produce oxygen.
+        </p>
+
+        <!-- Dashboard section for logged-in users -->
+        <div id="userDashboard" class="dashboard-section">
+          <h3>Your AlgaeVerse Dashboard</h3>
+          <p>
+            Welcome back, <span id="dashboardUserName"></span>! Here's your
+            personalized overview:
+          </p>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-number" id="userCO2">0kg</div>
+              <div class="stat-label">CO₂ Captured</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="userEnergy">0kWh</div>
+              <div class="stat-label">Energy Saved</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="userBuildings">0</div>
+              <div class="stat-label">Buildings Monitored</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-container">
+          <div class="card">
+            <div class="icon"><i class="fas fa-snowflake"></i></div>
+            <h3>Natural Cooling</h3>
+            <p>
+              Reduce urban heat island effect without energy-intensive AC
+              systems
+            </p>
+          </div>
+          <div class="card">
+            <div class="icon"><i class="fas fa-brain"></i></div>
+            <h3>AI Optimized</h3>
+            <p>Smart monitoring and adjustment of algae growth conditions</p>
+          </div>
+          <div class="card">
+            <div class="icon"><i class="fas fa-recycle"></i></div>
+            <h3>Circular Economy</h3>
+            <p>
+              Harvested algae reused as biofuel, fertilizer, or food products
+            </p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-number">10x</div>
+            <div class="stat-label">More CO₂ capture than trees</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">30%</div>
+            <div class="stat-label">Reduction in cooling energy</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Monitoring & optimization</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Natural solution</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem Page -->
+    <div id="problem" class="page">
+      <div class="content-section">
+        <h1>The Urban Challenge</h1>
+        <p>
+          Cities worldwide are facing unprecedented environmental challenges
+          that threaten livability and sustainability.
+        </p>
+
+        <div class="visualization">
+          <h3>Urban Temperature Rise Over Time</h3>
+          <div class="comparison-chart">
+            <div class="chart-bar" style="height: 120px">
+              <div class="chart-bar-label">2000</div>
+            </div>
+            <div class="chart-bar" style="height: 140px">
+              <div class="chart-bar-label">2010</div>
+            </div>
+            <div class="chart-bar" style="height: 170px">
+              <div class="chart-bar-label">2020</div>
+            </div>
+            <div class="chart-bar" style="height: 200px">
+              <div class="chart-bar-label">2030*</div>
+            </div>
+          </div>
+          <p style="text-align: center; font-style: italic">
+            *Projected based on current trends
+          </p>
+        </div>
+
+        <h2>Urban Heat Island Effect</h2>
+        <p>
+          Rapid urbanization, loss of vegetation, and concentrated human
+          activity are making cities significantly hotter than their surrounding
+          areas. This Urban Heat Island (UHI) effect creates numerous problems:
+        </p>
+        <ul>
+          <li>Increased energy consumption for cooling</li>
+          <li>Worsened air quality and pollution</li>
+          <li>Higher health risks, especially for vulnerable populations</li>
+          <li>Reduced quality of life and outdoor comfort</li>
+        </ul>
+
+        <h2>Unsustainable Solutions</h2>
+        <p>
+          Traditional cooling methods like air-conditioning are part of the
+          problem:
+        </p>
+        <ul>
+          <li>Massive energy consumption</li>
+          <li>Increased CO₂ emissions</li>
+          <li>Heat exhaust that further warms urban environments</li>
+          <li>High costs for residents and municipalities</li>
+        </ul>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-number">40%</div>
+            <div class="stat-label">Of global energy used in buildings</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">10%</div>
+            <div class="stat-label">Of global CO₂ from AC systems</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">5°C</div>
+            <div class="stat-label">Higher urban temperatures</div>
+          </div>
+        </div>
+
+        <h2>Aligning with UN Sustainable Development Goals</h2>
+        <p>
+          Our solution addresses key global challenges identified by the United
+          Nations:
+        </p>
+        <div class="card-container">
+          <div class="card">
+            <div class="icon"><i class="fas fa-city"></i></div>
+            <h3>SDG 11</h3>
+            <p>Sustainable Cities and Communities</p>
+          </div>
+          <div class="card">
+            <div class="icon"><i class="fas fa-globe-americas"></i></div>
+            <h3>SDG 13</h3>
+            <p>Climate Action</p>
+          </div>
+          <div class="card">
+            <div class="icon"><i class="fas fa-bolt"></i></div>
+            <h3>SDG 7</h3>
+            <p>Affordable and clean energy</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Solution Page -->
+    <div id="solution" class="page">
+      <div class="content-section">
+        <h1>Our Innovative Solution</h1>
+        <p>
+          AlgaeVerse AI combines biotechnology with artificial intelligence to
+          create sustainable urban cooling systems.
+        </p>
+
+        <div class="visualization">
+          <h3>How Algae Façades Work</h3>
+          <div class="process-flow">
+            <div class="process-step">
+              <div class="step-icon"><i class="fas fa-sun"></i></div>
+              <h4>Sunlight Absorption</h4>
+              <p>Algae uses sunlight for photosynthesis</p>
+            </div>
+            <div class="process-step">
+              <div class="step-icon"><i class="fas fa-wind"></i></div>
+              <h4>CO₂ Capture</h4>
+              <p>Absorbs CO₂ from the atmosphere</p>
+            </div>
+            <div class="process-step">
+              <div class="step-icon"><i class="fas fa-tint"></i></div>
+              <h4>Evaporative Cooling</h4>
+              <p>Water circulation provides natural cooling</p>
+            </div>
+            <div class="process-step">
+              <div class="step-icon"><i class="fas fa-leaf"></i></div>
+              <h4>Biomass Production</h4>
+              <p>Creates valuable biomass for harvesting</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Algae Building Façades</h2>
+        <p>Our system uses algae as "living green skins" on buildings that:</p>
+        <ul>
+          <li>Capture CO₂ up to 10x more efficiently than trees</li>
+          <li>Provide natural insulation and cooling</li>
+          <li>Produce oxygen and biomass</li>
+          <li>Create dynamic, living architecture</li>
+        </ul>
+
+        <h2>Why Algae?</h2>
+        <p>Algae offers unique advantages for urban environmental solutions:</p>
+        <div class="card-container">
+          <div class="card">
+            <div class="icon"><i class="fas fa-bolt"></i></div>
+            <h3>High Efficiency</h3>
+            <p>Superior CO₂ capture compared to terrestrial plants</p>
+          </div>
+          <div class="card">
+            <div class="icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Rapid Growth</h3>
+            <p>Fast biomass production in limited spaces</p>
+          </div>
+          <div class="card">
+            <div class="icon"><i class="fas fa-shapes"></i></div>
+            <h3>Versatility</h3>
+            <p>Can be integrated into various building designs</p>
+          </div>
+        </div>
+
+        <div class="visualization">
+          <h3>Efficiency Comparison</h3>
+          <div class="comparison-chart">
+            <div
+              class="chart-bar"
+              style="
+                height: 80px;
+                background: linear-gradient(to top, #4caf50, #8bc34a);
+              "
+            >
+              <div class="chart-bar-label">Trees</div>
+            </div>
+            <div
+              class="chart-bar"
+              style="
+                height: 120px;
+                background: linear-gradient(to top, #2196f3, #03a9f4);
+              "
+            >
+              <div class="chart-bar-label">Green Walls</div>
+            </div>
+            <div class="chart-bar" style="height: 200px">
+              <div class="chart-bar-label">Algae Façades</div>
+            </div>
+          </div>
+          <p style="text-align: center">
+            CO₂ capture efficiency per square meter
+          </p>
+        </div>
+
+        <h2>AI Optimization</h2>
+        <p>
+          Our AI platform maximizes the efficiency and effectiveness of algae
+          façades through continuous monitoring and adjustment of environmental
+          conditions.
+        </p>
+      </div>
+    </div>
+
+    <!-- Technology Page -->
+    <div id="technology" class="page">
+      <div class="content-section">
+        <h1>How AlgaeVerse AI Works</h1>
+        <p>
+          Our platform integrates multiple technologies to create an
+          intelligent, responsive system.
+        </p>
+
+        <div class="process-flow">
+          <div class="process-step">
+            <div class="step-icon"><i class="fas fa-camera"></i></div>
+            <h4>Monitoring</h4>
+            <p>Continuous data collection</p>
+          </div>
+          <div class="process-step">
+            <div class="step-icon"><i class="fas fa-chart-bar"></i></div>
+            <h4>Analysis</h4>
+            <p>AI processes the data</p>
+          </div>
+          <div class="process-step">
+            <div class="step-icon"><i class="fas fa-project-diagram"></i></div>
+            <h4>Prediction</h4>
+            <p>Forecasts growth and needs</p>
+          </div>
+          <div class="process-step">
+            <div class="step-icon"><i class="fas fa-cogs"></i></div>
+            <h4>Optimization</h4>
+            <p>Automated adjustments</p>
+          </div>
+        </div>
+
+        <h2>Monitoring & Diagnosis</h2>
+        <p>
+          Computer vision and sensor networks continuously analyze algae health
+          and system performance:
+        </p>
+        <ul>
+          <li>
+            Webcam + sensors analyze algae health (color, density, pH, growth
+            rate)
+          </li>
+          <li>
+            Detection of issues like dying algae, clogged pipes, abnormal pH
+          </li>
+          <li>
+            AI classification of algae condition: Healthy / Stressed / Withering
+          </li>
+        </ul>
+
+        <h2>Predictive Modeling</h2>
+        <p>
+          Machine learning algorithms forecast system performance and needs:
+        </p>
+        <ul>
+          <li>
+            Growth Prediction: Forecasts algae growth rate and oxygen production
+          </li>
+          <li>
+            Harvest Readiness: Detects optimal harvest time through color
+            analysis
+          </li>
+          <li>
+            Maintenance Forecasting: Predicts future stress or failure points
+          </li>
+        </ul>
+
+        <div class="visualization">
+          <h3>AI Prediction Accuracy</h3>
+          <div class="comparison-chart">
+            <div class="chart-bar" style="height: 160px">
+              <div class="chart-bar-label">Growth Rate</div>
+            </div>
+            <div class="chart-bar" style="height: 140px">
+              <div class="chart-bar-label">O₂ Production</div>
+            </div>
+            <div class="chart-bar" style="height: 180px">
+              <div class="chart-bar-label">Harvest Time</div>
+            </div>
+            <div class="chart-bar" style="height: 120px">
+              <div class="chart-bar-label">pH Changes</div>
+            </div>
+          </div>
+          <p style="text-align: center">
+            AI prediction accuracy across different metrics
+          </p>
+        </div>
+
+        <h2>Decision Engine</h2>
+        <p>
+          Our AI makes intelligent recommendations and automated adjustments:
+        </p>
+        <ul>
+          <li>Suggests dosing nutrients, adjusting water flow, or shading</li>
+          <li>Simulates 24-hour cooling impact and CO₂ capture</li>
+          <li>Dynamically adjusts environment parameters</li>
+        </ul>
+
+        <h2>Real-Time Dashboard</h2>
+        <p>User-friendly interface for monitoring and control:</p>
+        <ul>
+          <li>Live sliders for temperature, pH, light, CO₂, flow</li>
+          <li>
+            Outputs: Growth prediction, harvest readiness, cooling effect, CO₂
+            captured
+          </li>
+          <li>"What-if" analysis with visualization tools</li>
+          <li>Exportable data for further analysis</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Impact Page -->
+    <div id="impact" class="page">
+      <div class="content-section">
+        <h1>Social & Environmental Impact</h1>
+        <p>
+          AlgaeVerse AI creates multiple benefits for cities, residents, and the
+          planet.
+        </p>
+
+        <h2>Environmental Benefits</h2>
+        <div class="card-container">
+          <div class="card">
+            <div class="icon"><i class="fas fa-temperature-low"></i></div>
+            <h3>Cooler Cities</h3>
+            <p>Reduce Urban Heat Island effect without adding AC load</p>
+          </div>
+          <div class="card">
+            <div class="icon"><i class="fas fa-wind"></i></div>
+            <h3>Cleaner Air</h3>
+            <p>Capture CO₂ and produce oxygen for improved urban air quality</p>
+          </div>
+          <div class="card">
+            <div class="icon"><i class="fas fa-bolt"></i></div>
+            <h3>Energy Savings</h3>
+            <p>Lower electricity demand and reduced carbon emissions</p>
+          </div>
+        </div>
+
+        <div class="visualization">
+          <h3>Projected Annual Impact per 100 Buildings</h3>
+          <div class="comparison-chart">
+            <div class="chart-bar" style="height: 180px">
+              <div class="chart-bar-label">CO₂ Captured</div>
+            </div>
+            <div class="chart-bar" style="height: 160px">
+              <div class="chart-bar-label">Energy Saved</div>
+            </div>
+            <div class="chart-bar" style="height: 140px">
+              <div class="chart-bar-label">Cooling Effect</div>
+            </div>
+            <div class="chart-bar" style="height: 120px">
+              <div class="chart-bar-label">Biomass Produced</div>
+            </div>
+          </div>
+        </div>
+
+        <h2>Economic & Social Benefits</h2>
+        <ul>
+          <li>
+            Circular economy: Harvested algae reused as biofuel, fertilizer, or
+            food
+          </li>
+          <li>
+            Scalable solution: From dense tropical cities to space habitats
+          </li>
+          <li>
+            Improved public health through better air quality and reduced heat
+            stress
+          </li>
+          <li>Job creation in green technology and maintenance sectors</li>
+        </ul>
+
+        <h2>Evaluation Metrics</h2>
+        <p>We measure success through concrete environmental indicators:</p>
+        <ul>
+          <li>
+            Prediction Accuracy: MAE/RMSE for algae growth & O₂ production
+          </li>
+          <li>
+            Cooling Effect: Measured ΔT near pilot façade vs. control wall
+          </li>
+          <li>Energy Avoided: Equivalent kWh of AC load prevented</li>
+          <li>CO₂ Captured: kg/day per building surface</li>
+        </ul>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-number">3-5°C</div>
+            <div class="stat-label">Surface temperature reduction</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">2-4°C</div>
+            <div class="stat-label">Ambient air cooling</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">5kg/m²</div>
+            <div class="stat-label">Annual CO₂ capture</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">30%</div>
+            <div class="stat-label">Energy savings for cooling</div>
+          </div>
+        </div>
+
+        <h2>Ethical Considerations</h2>
+        <p>We've designed our system with ethical principles in mind:</p>
+        <ul>
+          <li>Privacy: No human tracking in our monitoring systems</li>
+          <li>Bias Mitigation: Trained on diverse environmental conditions</li>
+          <li>Transparency: Clear reporting and explainable AI decisions</li>
+          <li>Human Oversight: Operators review and approve recommendations</li>
+        </ul>
+      </div>
+    </div>
+    <footer>
+      <p>
+        AlgaeVerse AI – Intelligent Algae Façade Optimization for Sustainable
+        Cities
+      </p>
+      <p>
+        Addressing Urban Heat Island Effect through AI-powered Biotechnology
+      </p>
+    </footer>
+
+    <script>
+      // User authentication functions
+      function showLoginModal() {
+        document.getElementById("loginModal").style.display = "flex";
+      }
+
+      function closeLoginModal() {
+        document.getElementById("loginModal").style.display = "none";
+        document.getElementById("loginError").style.display = "none";
+        document.getElementById("loginForm").reset();
+      }
+
+      function showRegisterModal() {
+        document.getElementById("registerModal").style.display = "flex";
+      }
+
+      function closeRegisterModal() {
+        document.getElementById("registerModal").style.display = "none";
+        document.getElementById("registerError").style.display = "none";
+        document.getElementById("registerForm").reset();
+      }
+
+      function showRegisterForm() {
+        closeLoginModal();
+        showRegisterModal();
+      }
+
+      function showLoginForm() {
+        closeRegisterModal();
+        showLoginModal();
+      }
+
+      function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // Simple validation
+        if (!email || !password) {
+          showError("loginError", "Please fill in all fields");
+          return;
+        }
+
+        // Check if user exists in localStorage
+        const users = JSON.parse(
+          localStorage.getItem("algaeverseUsers") || "[]"
+        );
+        const user = users.find(
+          (u) => u.email === email && u.password === password
+        );
+
+        if (user) {
+          // Login successful - CLOSE THE MODAL HERE
+          localStorage.setItem("currentUser", JSON.stringify(user));
+          updateUIAfterLogin(user);
+          closeLoginModal(); // This line was missing
+        } else {
+          showError("loginError", "Invalid email or password");
+        }
+      }
+
+      function handleRegister(event) {
+        event.preventDefault();
+        const name = document.getElementById("regName").value;
+        const email = document.getElementById("regEmail").value;
+        const password = document.getElementById("regPassword").value;
+
+        // Simple validation
+        if (!name || !email || !password) {
+          showError("registerError", "Please fill in all fields");
+          return;
+        }
+
+        if (password.length < 6) {
+          showError("registerError", "Password must be at least 6 characters");
+          return;
+        }
+
+        // Check if user already exists
+        const users = JSON.parse(
+          localStorage.getItem("algaeverseUsers") || "[]"
+        );
+        if (users.some((user) => user.email === email)) {
+          showError("registerError", "User with this email already exists");
+          return;
+        }
+
+        // Create new user
+        const newUser = {
+          name,
+          email,
+          password,
+          joined: new Date().toISOString(),
+          co2Captured: Math.floor(Math.random() * 100) + 50, // Random data for demo
+          energySaved: Math.floor(Math.random() * 500) + 200, // Random data for demo
+          buildings: Math.floor(Math.random() * 3) + 1, // Random data for demo
+        };
+
+        users.push(newUser);
+        localStorage.setItem("algaeverseUsers", JSON.stringify(users));
+        localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+        updateUIAfterLogin(newUser);
+        closeRegisterModal();
+        closeLoginModal();
+      }
+
+      function logout() {
+        localStorage.removeItem("currentUser");
+        updateUIAfterLogout();
+      }
+
+      function updateUIAfterLogin(user) {
+        // Update navigation
+        document.getElementById("loginBtn").style.display = "none";
+        document.getElementById("userInfo").style.display = "flex";
+        document.getElementById("userName").textContent = user.name;
+        document.getElementById("userAvatar").textContent = user.name
+          .charAt(0)
+          .toUpperCase();
+
+        // Show dashboard links
+        document.getElementById("aiDashboardLink").style.display = "list-item";
+        document.getElementById("centerDashboardLink").style.display =
+          "list-item";
+        document.getElementById("ODADashboardLink").style.display = "list-item";
+
+        // Update dashboard
+        document.getElementById("userDashboard").style.display = "block";
+        document.getElementById("dashboardUserName").textContent = user.name;
+        document.getElementById("userCO2").textContent =
+          user.co2Captured + "kg";
+        document.getElementById("userEnergy").textContent =
+          user.energySaved + "kWh";
+        document.getElementById("userBuildings").textContent = user.buildings;
+
+        // Update center dashboard stats
+        document.getElementById("centerBuildings").textContent = user.buildings;
+        document.getElementById("centerCO2").textContent =
+          user.co2Captured + "kg";
+        document.getElementById("centerEnergy").textContent =
+          user.energySaved + "kWh";
+      }
+
+      function updateUIAfterLogout() {
+        // Update navigation
+        document.getElementById("loginBtn").style.display = "block";
+        document.getElementById("userInfo").style.display = "none";
+
+        // Hide dashboard links
+        document.getElementById("aiDashboardLink").style.display = "none";
+        document.getElementById("centerDashboardLink").style.display = "none";
+        document.getElementById("ODADashboardLink").style.display = "none";
+        // Hide dashboard
+        document.getElementById("userDashboard").style.display = "none";
+
+        // If on a dashboard page, redirect to home
+        if (
+          window.location.hash === "#aiDashboard" ||
+          window.location.hash === "#centerDashboard"
+        ) {
+          showPage("home");
+        }
+      }
+
+      function showError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.textContent = message;
+        errorElement.style.display = "block";
+      }
+
+      // Check if user is logged in on page load
+      function checkLoginStatus() {
+        const currentUser = JSON.parse(
+          localStorage.getItem("currentUser") || "null"
+        );
+        if (currentUser) {
+          updateUIAfterLogin(currentUser);
+        }
+      }
+
+      // Page navigation functions
+      function showPage(pageId) {
+        // Hide all pages
+        const pages = document.querySelectorAll(".page");
+        pages.forEach((page) => {
+          page.classList.remove("active");
+        });
+
+        // Show the selected page
+        document.getElementById(pageId).classList.add("active");
+
+        // Scroll to top
+        window.scrollTo(0, 0);
+      }
+
+      // Initialize slider functionality
+      function initSliders() {
+        const sliders = document.querySelectorAll(".slider");
+        sliders.forEach((slider) => {
+          const valueDisplay = document.getElementById(
+            slider.id.replace("Slider", "Value")
+          );
+
+          // Set initial value
+          if (valueDisplay) {
+            if (slider.id === "phSlider") {
+              valueDisplay.textContent = parseFloat(slider.value).toFixed(1);
+            } else if (slider.id === "tempSlider") {
+              valueDisplay.textContent = slider.value + "°C";
+            } else {
+              valueDisplay.textContent = slider.value + "%";
+            }
+          }
+
+          // Add event listener for changes
+          slider.addEventListener("input", function () {
+            if (valueDisplay) {
+              if (slider.id === "phSlider") {
+                valueDisplay.textContent = parseFloat(this.value).toFixed(1);
+              } else if (slider.id === "tempSlider") {
+                valueDisplay.textContent = this.value + "°C";
+              } else {
+                valueDisplay.textContent = this.value + "%";
+              }
+            }
+          });
+        });
+      }
+
+      // Animate chart bars on scroll
+      document.addEventListener("DOMContentLoaded", function () {
+        const chartBars = document.querySelectorAll(".chart-bar");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                // Animate the bar height
+                const height = entry.target.style.height;
+                entry.target.style.height = "0px";
+                setTimeout(() => {
+                  entry.target.style.height = height;
+                }, 100);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        chartBars.forEach((bar) => {
+          observer.observe(bar);
+        });
+
+        // Check login status on page load
+        checkLoginStatus();
+
+        // Initialize sliders
+        initSliders();
+      });
+    </script>
+  </body>
+</html>
